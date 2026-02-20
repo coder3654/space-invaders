@@ -1095,11 +1095,24 @@
             if (audioCtx.state === 'suspended') {
                 audioCtx.resume();
             }
+            // Hide both screens
             document.getElementById('startScreen').classList.add('hidden');
+            document.getElementById('gameOver').classList.add('hidden');
+            // Reset ALL global state
             gameState = 'playing';
             score = 0;
             lives = 3;
             level = 1;
+            levelTransition = false;
+            levelTransitionTimer = 0;
+            alienDirection = 1;
+            alienMoveTimer = 0;
+            alienShootTimer = 0;
+            ufoTimer = 0;
+            animationTimer = 0;
+            animationFrame = 0;
+            shootCooldown = 0;
+            lastTime = 0;
             initGame();
         }
         
