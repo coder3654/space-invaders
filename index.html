@@ -86,14 +86,19 @@
         }
         
         #gameOver, #startScreen {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             color: #00ff00;
             text-align: center;
-            z-index: 100;
+            z-index: 200;
             text-shadow: 0 0 20px #00ff00;
+            background: #000;
+            padding: 20px;
+            overflow-y: auto;
         }
         
         #gameOver h1, #startScreen h1 {
@@ -208,6 +213,38 @@
     </style>
 </head>
 <body>
+    <!-- Start screen & game over are OUTSIDE gameContainer so they always fill the real screen -->
+    <div id="startScreen">
+        <h1>SPACE INVADERS</h1>
+        <p>ARROW KEYS TO MOVE</p>
+        <p style="margin-bottom:8px;">SPACE / FIRE BTN TO SHOOT</p>
+        <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px; align-items: center;">
+            <div style="display: flex; align-items: center; gap: 14px;">
+                <canvas id="prev0" width="50" height="36"></canvas>
+                <span style="color:#ffff00; font-size:12px;">= 30 PTS</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 14px;">
+                <canvas id="prev1" width="50" height="36"></canvas>
+                <span style="color:#00ffff; font-size:12px;">= 20 PTS</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 14px;">
+                <canvas id="prev2" width="50" height="36"></canvas>
+                <span style="color:#ff00ff; font-size:12px;">= 10 PTS</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 14px;">
+                <canvas id="prevUFO" width="60" height="36"></canvas>
+                <span style="color:#ff0000; font-size:12px;">= ? MYSTERY</span>
+            </div>
+        </div>
+        <button class="button" onclick="startGame()">START GAME</button>
+    </div>
+
+    <div id="gameOver" class="hidden">
+        <h1>GAME OVER</h1>
+        <p>FINAL SCORE: <span id="finalScore">0000</span></p>
+        <button class="button" onclick="restartGame()">PLAY AGAIN</button>
+    </div>
+
     <div id="gameContainer">
         <div id="ui">
             <div>SCORE: <span id="score">0000</span></div>
@@ -217,38 +254,7 @@
                 <span>LIVES:</span>
             </div>
         </div>
-        
-        <div id="startScreen">
-            <h1>SPACE INVADERS</h1>
-            <p>ARROW KEYS TO MOVE</p>
-            <p>SPACE TO SHOOT</p>
-            <div style="margin-top: 30px; display: flex; flex-direction: column; gap: 10px; align-items: center;">
-                <div style="display: flex; align-items: center; gap: 14px;">
-                    <canvas id="prev0" width="50" height="36"></canvas>
-                    <span style="color:#ffff00; font-size:12px;">= 30 PTS</span>
-                </div>
-                <div style="display: flex; align-items: center; gap: 14px;">
-                    <canvas id="prev1" width="50" height="36"></canvas>
-                    <span style="color:#00ffff; font-size:12px;">= 20 PTS</span>
-                </div>
-                <div style="display: flex; align-items: center; gap: 14px;">
-                    <canvas id="prev2" width="50" height="36"></canvas>
-                    <span style="color:#ff00ff; font-size:12px;">= 10 PTS</span>
-                </div>
-                <div style="display: flex; align-items: center; gap: 14px;">
-                    <canvas id="prevUFO" width="60" height="36"></canvas>
-                    <span style="color:#ff0000; font-size:12px;">= ? MYSTERY</span>
-                </div>
-            </div>
-            <button class="button" onclick="startGame()">START GAME</button>
-        </div>
-        
-        <div id="gameOver" class="hidden">
-            <h1>GAME OVER</h1>
-            <p>FINAL SCORE: <span id="finalScore">0000</span></p>
-            <button class="button" onclick="restartGame()">PLAY AGAIN</button>
-        </div>
-        
+
         <canvas id="gameCanvas" width="800" height="600"></canvas>
 
         <!-- Mobile touch controls -->
@@ -272,20 +278,49 @@
             const container = document.getElementById('gameContainer');
             const isMobile = window.matchMedia('(pointer: coarse)').matches;
             const touchH = isMobile ? 120 : 0;
-            const availW = window.innerWidth;
-            const availH = window.innerHeight - touchH;
-            // Scale to fit the screen in any orientation
-            const scale = Math.min(availW / GAME_W, availH / GAME_H);
+            const screenW = window.innerWidth;
+            const screenH = window.innerHeight;
+            const isPortrait = screenH > screenW;
+
             container.style.width  = GAME_W + 'px';
             container.style.height = GAME_H + 'px';
-            container.style.transform = 'scale(' + scale + ')';
-            container.style.transformOrigin = 'top center';
-            // Centre vertically in the available space
-            const scaledH = GAME_H * scale;
-            const topOffset = Math.max(0, (availH - scaledH) / 2);
-            container.style.marginTop = topOffset + 'px';
-            // Give body enough height so touch controls sit below game
-            document.body.style.minHeight = (scaledH + touchH + topOffset * 2) + 'px';
+
+            if (isPortrait && isMobile) {
+                // Rotate 90deg so landscape game fits portrait screen
+                // Available area for the rotated game:
+                const availW = screenH - touchH;  // rotated: height becomes width
+                const availH = screenW;            // rotated: width becomes height
+                const scale = Math.min(availW / GAME_W, availH / GAME_H);
+                const offsetX = (screenW - GAME_H * scale) / 2;
+                const offsetY = (screenH - touchH - GAME_W * scale) / 2;
+                container.style.transformOrigin = '0 0';
+                container.style.transform =
+                    'translateX(' + (offsetX + GAME_H * scale) + 'px) ' +
+                    'translateY(' + offsetY + 'px) ' +
+                    'rotate(90deg) ' +
+                    'scale(' + scale + ')';
+                container.style.marginTop = '0px';
+
+                // Also rotate touch controls to match
+                const tc = document.getElementById('touchControls');
+                if (tc) {
+                    tc.style.position = 'fixed';
+                    tc.style.bottom = '0';
+                    tc.style.left = '0';
+                    tc.style.right = '0';
+                    tc.style.height = touchH + 'px';
+                }
+            } else {
+                // Normal landscape / desktop scaling
+                const availW = screenW;
+                const availH = screenH - touchH;
+                const scale = Math.min(availW / GAME_W, availH / GAME_H);
+                container.style.transformOrigin = 'top center';
+                container.style.transform = 'scale(' + scale + ')';
+                const scaledH = GAME_H * scale;
+                const topOffset = Math.max(0, (availH - scaledH) / 2);
+                container.style.marginTop = topOffset + 'px';
+            }
         }
         scaleGame();
         window.addEventListener('resize', scaleGame);
