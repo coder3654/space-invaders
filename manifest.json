@@ -4,7 +4,7 @@
   "description": "Classic Space Invaders arcade game",
   "start_url": "./index.html",
   "display": "fullscreen",
-  "orientation": "landscape",
+  "orientation": "any",
   "background_color": "#000000",
   "theme_color": "#00ff00",
   "icons": [
