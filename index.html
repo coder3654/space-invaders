@@ -832,7 +832,8 @@
         
         // Game loop
         function gameLoop(timestamp) {
-            const deltaTime = (timestamp - lastTime) / 1000;
+            if (lastTime === 0) lastTime = timestamp;
+            const deltaTime = Math.min((timestamp - lastTime) / 1000, 0.05);
             lastTime = timestamp;
             
             // Clear canvas
@@ -1099,7 +1100,6 @@
             score = 0;
             lives = 3;
             level = 1;
-            lastTime = 0;
             initGame();
         }
         
@@ -1118,7 +1118,8 @@
         
         // Enhanced game loop with player movement
         function enhancedGameLoop(timestamp) {
-            const deltaTime = (timestamp - lastTime) / 1000;
+            if (lastTime === 0) lastTime = timestamp;
+            const deltaTime = Math.min((timestamp - lastTime) / 1000, 0.05);
             lastTime = timestamp;
             
             ctx.fillStyle = '#000';
