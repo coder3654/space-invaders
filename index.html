@@ -1073,14 +1073,14 @@
             lives = 3;
             level = 1;
             lastTime = 0;
+            alienDirection = 1;
+            levelTransition = false;
             // Resume audio context (required after user gesture on mobile)
             if (audioCtx.state === 'suspended') audioCtx.resume();
             initGame();
-            // Always restart the loop in case it stopped (e.g. tab was backgrounded)
-            if (!gameLoopRunning) {
-                gameLoopRunning = true;
-                requestAnimationFrame(enhancedGameLoop);
-            }
+            // Always launch a fresh loop
+            gameLoopRunning = true;
+            requestAnimationFrame(enhancedGameLoop);
         }
         
         // Game over
@@ -1369,10 +1369,14 @@
 
         // Initialize and start
         updateUI();
-        // Just draw the start screen background — don't start game loop yet
-        // The loop starts properly when user clicks START or PLAY AGAIN
-        gameLoopRunning = true;
-        requestAnimationFrame(enhancedGameLoop);
+        // Initialize stars so start screen looks nice
+        for (let i = 0; i < 50; i++) stars.push(new Star(0));
+        for (let i = 0; i < 30; i++) stars.push(new Star(1));
+        for (let i = 0; i < 20; i++) stars.push(new Star(2));
+        // Draw a static black background so canvas isn't blank
+        ctx.fillStyle = '#000';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        // Do NOT start the game loop here — it starts only when user taps START.
     </script>
 </body>
 </html>
