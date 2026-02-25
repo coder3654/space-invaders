@@ -1420,23 +1420,21 @@
             const vw = window.innerWidth;
             const vh = window.innerHeight;
 
-            // Scale to fill full width — buttons overlay on top of canvas edges
+            // 56px for buttons, game must fully fit vertically
             const availH = vh - 56;
             const availW = vw;
 
-            // Game canvas 800x600 + 8px borders = 808x608
-            // Use scaleW to stretch canvas edge to edge horizontally
+            // Game canvas 808x608
             const scaleW = availW / 808;
             const scaleH = availH / 608;
-            // Pick whichever is bigger so canvas fills more screen
-            const scale = Math.max(scaleW, scaleH);
+            // Use height scale so full canvas always visible, but nudge it up 10% wider
+            const scale = Math.min(scaleW, scaleH * 1.1);
 
             container.style.transform = `scale(${scale})`;
             container.style.transformOrigin = 'top left';
             container.style.position = 'absolute';
             container.style.top = '0';
 
-            // Center horizontally
             const scaledW = 808 * scale;
             const leftOffset = Math.max(0, (vw - scaledW) / 2);
             container.style.left = leftOffset + 'px';
