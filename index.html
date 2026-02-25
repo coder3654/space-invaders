@@ -188,12 +188,12 @@
             }
             body {
                 align-items: flex-start;
-                padding-top: 10px;
-                padding-bottom: 120px;
-                overflow-y: auto;
+                justify-content: flex-start;
+                padding: 8px;
+                overflow: auto;
             }
             #gameContainer {
-                transform-origin: top center;
+                transform-origin: top left;
             }
         }
         
@@ -1358,14 +1358,47 @@
             const isTouchDevice = window.matchMedia('(pointer: coarse), (hover: none)').matches || ('ontouchstart' in window);
             if (!isTouchDevice) return;
             const container = document.getElementById('gameContainer');
-            const maxW = window.innerWidth - 16;
-            const scale = Math.min(1, maxW / 808); // 800px canvas + 8px border
+            const isLandscape = window.innerWidth > window.innerHeight;
+            // In landscape, leave room for controls on the right side
+            // In portrait, leave room for controls at the bottom
+            const availW = isLandscape ? window.innerWidth - 180 : window.innerWidth - 16;
+            const availH = isLandscape ? window.innerHeight - 16 : window.innerHeight - 140;
+            const scaleW = availW / 808;
+            const scaleH = availH / 608;
+            const scale = Math.min(scaleW, scaleH, 1);
             container.style.transform = `scale(${scale})`;
-            container.style.transformOrigin = 'top center';
+            container.style.transformOrigin = 'top left';
+
+            // Reposition controls based on orientation
+            const controls = document.getElementById('mobileControls');
+            if (isLandscape) {
+                controls.style.flexDirection = 'column';
+                controls.style.top = '0';
+                controls.style.bottom = '0';
+                controls.style.left = 'auto';
+                controls.style.right = '0';
+                controls.style.width = '160px';
+                controls.style.padding = '20px 10px';
+                controls.style.background = 'linear-gradient(to left, rgba(0,0,0,0.9), transparent)';
+                controls.style.justifyContent = 'center';
+                controls.style.gap = '20px';
+            } else {
+                controls.style.flexDirection = 'row';
+                controls.style.top = 'auto';
+                controls.style.bottom = '0';
+                controls.style.left = '0';
+                controls.style.right = '0';
+                controls.style.width = 'auto';
+                controls.style.padding = '12px 20px 24px';
+                controls.style.background = 'linear-gradient(to top, rgba(0,0,0,0.9), transparent)';
+                controls.style.justifyContent = 'space-between';
+                controls.style.gap = '';
+            }
         }
 
         scaleGameForMobile();
         window.addEventListener('resize', scaleGameForMobile);
+        window.addEventListener('orientationchange', () => setTimeout(scaleGameForMobile, 100));
 
         // Initialize and start
         updateUI();
