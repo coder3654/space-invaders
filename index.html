@@ -125,14 +125,14 @@
             bottom: 0;
             left: 0;
             right: 0;
-            height: 65px;
+            height: 56px;
             pointer-events: none;
             z-index: 200;
         }
 
         #btnGroupLeft {
             position: absolute;
-            bottom: 6px;
+            bottom: 2px;
             left: 6px;
             display: flex;
             flex-direction: row;
@@ -142,7 +142,7 @@
 
         #btnGroupRight {
             position: absolute;
-            bottom: 6px;
+            bottom: 2px;
             right: 6px;
             pointer-events: all;
         }
@@ -1420,8 +1420,8 @@
             const vw = window.innerWidth;
             const vh = window.innerHeight;
 
-            // Only 65px reserved for controls at bottom
-            const availH = vh - 65;
+            // Only 56px reserved for controls at bottom
+            const availH = vh - 56;
             const availW = vw;
 
             // Game canvas 800x600 + 8px borders = 808x608
