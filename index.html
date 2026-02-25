@@ -125,15 +125,15 @@
             bottom: 0;
             left: 0;
             right: 0;
-            height: 110px;
+            height: 100px;
             pointer-events: none;
             z-index: 200;
         }
 
         #btnGroupLeft {
             position: absolute;
-            bottom: 12px;
-            left: 12px;
+            bottom: 10px;
+            left: 10px;
             display: flex;
             flex-direction: row;
             gap: 10px;
@@ -142,8 +142,8 @@
 
         #btnGroupRight {
             position: absolute;
-            bottom: 12px;
-            right: 12px;
+            bottom: 10px;
+            right: 10px;
             pointer-events: all;
         }
 
@@ -220,12 +220,14 @@
                 overflow: hidden;
                 padding: 0;
                 margin: 0;
-                align-items: flex-start;
-                justify-content: flex-start;
+                display: block;
             }
 
             #gameContainer {
                 transform-origin: top left;
+                position: absolute;
+                top: 0;
+                left: 0;
             }
 
             #mobileControls {
@@ -1412,7 +1414,7 @@
             if (!isTouchDevice) return;
 
             const isLandscape = window.innerWidth > window.innerHeight;
-            if (!isLandscape) return; // portrait handled by CSS rotate message
+            if (!isLandscape) return;
 
             const container = document.getElementById('gameContainer');
             const vw = window.innerWidth;
@@ -1422,18 +1424,21 @@
             const availH = vh - 100;
             const availW = vw;
 
-            // Canvas is 808 × 608 (800px + 4px border each side, 600px + 4px border each side)
+            // Game canvas is 800x600, border adds 8px each dimension
             const scaleW = availW / 808;
             const scaleH = availH / 608;
             const scale = Math.min(scaleW, scaleH);
 
             container.style.transform = `scale(${scale})`;
             container.style.transformOrigin = 'top left';
+            container.style.position = 'absolute';
+            container.style.top = '0';
+            container.style.left = '0';
 
-            // Center horizontally if there's spare space
+            // Center horizontally
             const scaledW = 808 * scale;
             const leftOffset = Math.max(0, (vw - scaledW) / 2);
-            container.style.marginLeft = leftOffset + 'px';
+            container.style.left = leftOffset + 'px';
         }
 
         scaleGameForMobile();
