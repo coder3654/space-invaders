@@ -82,13 +82,13 @@
         }
         
         #gameOver h1, #startScreen h1 {
-            font-size: 32px;
+            font-size: 36px;
             margin-bottom: 20px;
             animation: pulse 2s infinite;
         }
         
         #gameOver p, #startScreen p {
-            font-size: 14px;
+            font-size: 18px;
             margin: 10px 0;
         }
         
@@ -125,25 +125,25 @@
             bottom: 0;
             left: 0;
             right: 0;
-            height: 100px;
+            height: 75px;
             pointer-events: none;
             z-index: 200;
         }
 
         #btnGroupLeft {
             position: absolute;
-            bottom: 10px;
-            left: 10px;
+            bottom: 8px;
+            left: 8px;
             display: flex;
             flex-direction: row;
-            gap: 10px;
+            gap: 8px;
             pointer-events: all;
         }
 
         #btnGroupRight {
             position: absolute;
-            bottom: 10px;
-            right: 10px;
+            bottom: 8px;
+            right: 8px;
             pointer-events: all;
         }
 
@@ -152,10 +152,10 @@
             border: 2px solid #00ff00;
             color: #00ff00;
             font-family: 'Press Start 2P', cursive;
-            font-size: 22px;
-            width: 80px;
-            height: 80px;
-            border-radius: 14px;
+            font-size: 18px;
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -176,9 +176,9 @@
             background: rgba(255, 50, 50, 0.12);
             border-color: #ff4444;
             color: #ff4444;
-            width: 90px;
-            height: 80px;
-            font-size: 11px;
+            width: 70px;
+            height: 60px;
+            font-size: 10px;
             letter-spacing: 1px;
             box-shadow: 0 0 10px rgba(255,0,0,0.3);
         }
@@ -276,22 +276,22 @@
             <h1>SPACE INVADERS</h1>
             <p>ARROW KEYS TO MOVE</p>
             <p>SPACE TO SHOOT</p>
-            <div style="margin-top: 30px; display: flex; flex-direction: column; gap: 10px; align-items: center;">
+            <div style="margin-top: 30px; display: flex; flex-direction: column; gap: 14px; align-items: center;">
                 <div style="display: flex; align-items: center; gap: 14px;">
-                    <canvas id="prev0" width="50" height="36"></canvas>
-                    <span style="color:#ffff00; font-size:12px;">= 30 PTS</span>
+                    <canvas id="prev0" width="70" height="50"></canvas>
+                    <span style="color:#ffff00; font-size:16px;">= 30 PTS</span>
                 </div>
                 <div style="display: flex; align-items: center; gap: 14px;">
-                    <canvas id="prev1" width="50" height="36"></canvas>
-                    <span style="color:#00ffff; font-size:12px;">= 20 PTS</span>
+                    <canvas id="prev1" width="70" height="50"></canvas>
+                    <span style="color:#00ffff; font-size:16px;">= 20 PTS</span>
                 </div>
                 <div style="display: flex; align-items: center; gap: 14px;">
-                    <canvas id="prev2" width="50" height="36"></canvas>
-                    <span style="color:#ff00ff; font-size:12px;">= 10 PTS</span>
+                    <canvas id="prev2" width="70" height="50"></canvas>
+                    <span style="color:#ff00ff; font-size:16px;">= 10 PTS</span>
                 </div>
                 <div style="display: flex; align-items: center; gap: 14px;">
-                    <canvas id="prevUFO" width="60" height="36"></canvas>
-                    <span style="color:#ff0000; font-size:12px;">= ? MYSTERY</span>
+                    <canvas id="prevUFO" width="80" height="50"></canvas>
+                    <span style="color:#ff0000; font-size:16px;">= ? MYSTERY</span>
                 </div>
             </div>
             <button class="button" onclick="startGame()">START GAME</button>
@@ -1352,7 +1352,6 @@
         
         // Draw alien preview sprites on the start screen
         function drawPreviewSprites() {
-            // type 0 = Octopus (30pts), type 1 = Crab (20pts), type 2 = Squid (10pts)
             const configs = [
                 { id: 'prev0', color: '#ffff00', type: 0 },
                 { id: 'prev1', color: '#00ffff', type: 1 },
@@ -1366,42 +1365,43 @@
                 cx.clearRect(0, 0, c.width, c.height);
                 cx.fillStyle = color;
                 const x = c.width / 2;
-                const y = 4;
+                const y = 6;
+                const s = 1.4; // scale factor for bigger canvas
 
-                if (type === 2) { // Squid - top row
-                    cx.fillRect(x - 15, y,     30, 5);
-                    cx.fillRect(x - 10, y + 5,  20, 10);
-                    cx.fillRect(x - 15, y + 15, 5,  10);
-                    cx.fillRect(x - 5,  y + 15, 5,  10);
-                    cx.fillRect(x + 5,  y + 15, 5,  10);
-                    cx.fillRect(x + 10, y + 15, 5,  10);
-                } else if (type === 1) { // Crab - middle rows
-                    cx.fillRect(x - 10, y,      5,  5);
-                    cx.fillRect(x + 5,  y,      5,  5);
-                    cx.fillRect(x - 15, y + 5,  30, 10);
-                    cx.fillRect(x - 10, y + 15, 20, 5);
-                    cx.fillRect(x - 15, y + 20, 5,  5);
-                    cx.fillRect(x + 10, y + 20, 5,  5);
-                } else { // Octopus - bottom rows
-                    cx.fillRect(x - 15, y,      30, 15);
-                    cx.fillRect(x - 10, y - 5,  5,  5);
-                    cx.fillRect(x + 5,  y - 5,  5,  5);
-                    cx.fillRect(x - 15, y + 15, 5,  10);
-                    cx.fillRect(x + 10, y + 15, 5,  10);
+                if (type === 2) {
+                    cx.fillRect(x - 15*s, y,        30*s, 5*s);
+                    cx.fillRect(x - 10*s, y + 5*s,  20*s, 10*s);
+                    cx.fillRect(x - 15*s, y + 15*s, 5*s,  10*s);
+                    cx.fillRect(x - 5*s,  y + 15*s, 5*s,  10*s);
+                    cx.fillRect(x + 5*s,  y + 15*s, 5*s,  10*s);
+                    cx.fillRect(x + 10*s, y + 15*s, 5*s,  10*s);
+                } else if (type === 1) {
+                    cx.fillRect(x - 10*s, y,        5*s,  5*s);
+                    cx.fillRect(x + 5*s,  y,        5*s,  5*s);
+                    cx.fillRect(x - 15*s, y + 5*s,  30*s, 10*s);
+                    cx.fillRect(x - 10*s, y + 15*s, 20*s, 5*s);
+                    cx.fillRect(x - 15*s, y + 20*s, 5*s,  5*s);
+                    cx.fillRect(x + 10*s, y + 20*s, 5*s,  5*s);
+                } else {
+                    cx.fillRect(x - 15*s, y,        30*s, 15*s);
+                    cx.fillRect(x - 10*s, y - 5*s,  5*s,  5*s);
+                    cx.fillRect(x + 5*s,  y - 5*s,  5*s,  5*s);
+                    cx.fillRect(x - 15*s, y + 15*s, 5*s,  10*s);
+                    cx.fillRect(x + 10*s, y + 15*s, 5*s,  10*s);
                 }
             });
 
-            // UFO
             const ufoCanvas = document.getElementById('prevUFO');
             if (ufoCanvas) {
                 const cx = ufoCanvas.getContext('2d');
                 cx.clearRect(0, 0, ufoCanvas.width, ufoCanvas.height);
                 cx.fillStyle = '#ff0000';
                 const x = ufoCanvas.width / 2;
-                const y = 8;
-                cx.fillRect(x - 20, y + 10, 40, 5);
-                cx.fillRect(x - 15, y,      30, 10);
-                cx.fillRect(x - 25, y + 15, 50, 3);
+                const y = 10;
+                const s = 1.4;
+                cx.fillRect(x - 20*s, y + 10, 40*s, 6);
+                cx.fillRect(x - 15*s, y,      30*s, 12);
+                cx.fillRect(x - 25*s, y + 16, 50*s, 4);
             }
         }
 
@@ -1420,8 +1420,8 @@
             const vw = window.innerWidth;
             const vh = window.innerHeight;
 
-            // Reserve 100px at bottom for controls
-            const availH = vh - 100;
+            // Reserve 75px at bottom for controls
+            const availH = vh - 75;
             const availW = vw;
 
             // Game canvas is 800x600, border adds 8px each dimension
