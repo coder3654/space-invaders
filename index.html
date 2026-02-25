@@ -181,8 +181,8 @@
             box-shadow: 0 0 20px rgba(255,0,0,0.6);
         }
 
-        /* Show mobile controls only on touch screens */
-        @media (pointer: coarse) {
+        /* Show mobile controls on touch screens */
+        @media (pointer: coarse), (hover: none) {
             #mobileControls {
                 display: flex;
             }
@@ -1355,7 +1355,7 @@
 
         // Scale game canvas to fit mobile screens
         function scaleGameForMobile() {
-            const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
+            const isTouchDevice = window.matchMedia('(pointer: coarse), (hover: none)').matches || ('ontouchstart' in window);
             if (!isTouchDevice) return;
             const container = document.getElementById('gameContainer');
             const maxW = window.innerWidth - 16;
