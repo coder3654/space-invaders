@@ -1065,13 +1065,22 @@
         }
         
         // Start game
+        let gameLoopRunning = false;
         function startGame() {
             document.getElementById('startScreen').classList.add('hidden');
             gameState = 'playing';
             score = 0;
             lives = 3;
             level = 1;
+            lastTime = 0;
+            // Resume audio context (required after user gesture on mobile)
+            if (audioCtx.state === 'suspended') audioCtx.resume();
             initGame();
+            // Always restart the loop in case it stopped (e.g. tab was backgrounded)
+            if (!gameLoopRunning) {
+                gameLoopRunning = true;
+                requestAnimationFrame(enhancedGameLoop);
+            }
         }
         
         // Game over
@@ -1084,12 +1093,15 @@
         // Restart game
         function restartGame() {
             document.getElementById('gameOver').classList.add('hidden');
+            lastTime = 0;
+            if (audioCtx.state === 'suspended') audioCtx.resume();
             startGame();
         }
         
         // Enhanced game loop with player movement
         function enhancedGameLoop(timestamp) {
-            const deltaTime = (timestamp - lastTime) / 1000;
+            if (lastTime === 0) lastTime = timestamp;
+            const deltaTime = Math.min((timestamp - lastTime) / 1000, 0.05); // cap at 50ms
             lastTime = timestamp;
             
             ctx.fillStyle = '#000';
@@ -1357,6 +1369,9 @@
 
         // Initialize and start
         updateUI();
+        // Just draw the start screen background — don't start game loop yet
+        // The loop starts properly when user clicks START or PLAY AGAIN
+        gameLoopRunning = true;
         requestAnimationFrame(enhancedGameLoop);
     </script>
 </body>
