@@ -1,4 +1,4 @@
-const CACHE_NAME = 'space-invaders-v9';
+const CACHE_NAME = 'space-invaders-v10';
 const ASSETS = [
   './',
   './index.html',
