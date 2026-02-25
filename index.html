@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>SPACE INVADERS</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
@@ -125,25 +125,25 @@
             bottom: 0;
             left: 0;
             right: 0;
-            height: 75px;
+            height: 65px;
             pointer-events: none;
             z-index: 200;
         }
 
         #btnGroupLeft {
             position: absolute;
-            bottom: 8px;
-            left: 8px;
+            bottom: 6px;
+            left: 6px;
             display: flex;
             flex-direction: row;
-            gap: 8px;
+            gap: 6px;
             pointer-events: all;
         }
 
         #btnGroupRight {
             position: absolute;
-            bottom: 8px;
-            right: 8px;
+            bottom: 6px;
+            right: 6px;
             pointer-events: all;
         }
 
@@ -152,15 +152,15 @@
             border: 2px solid #00ff00;
             color: #00ff00;
             font-family: 'Press Start 2P', cursive;
-            font-size: 18px;
-            width: 60px;
-            height: 60px;
-            border-radius: 12px;
+            font-size: 16px;
+            width: 52px;
+            height: 52px;
+            border-radius: 10px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 0 10px rgba(0,255,0,0.3);
+            box-shadow: 0 0 8px rgba(0,255,0,0.3);
             user-select: none;
             -webkit-user-select: none;
             touch-action: none;
@@ -169,24 +169,24 @@
         .mobile-btn:active,
         .mobile-btn.pressed {
             background: rgba(0, 255, 0, 0.35);
-            box-shadow: 0 0 22px rgba(0,255,0,0.7);
+            box-shadow: 0 0 18px rgba(0,255,0,0.7);
         }
 
         .mobile-btn-fire {
             background: rgba(255, 50, 50, 0.12);
             border-color: #ff4444;
             color: #ff4444;
-            width: 70px;
-            height: 60px;
-            font-size: 10px;
+            width: 60px;
+            height: 52px;
+            font-size: 9px;
             letter-spacing: 1px;
-            box-shadow: 0 0 10px rgba(255,0,0,0.3);
+            box-shadow: 0 0 8px rgba(255,0,0,0.3);
         }
 
         .mobile-btn-fire:active,
         .mobile-btn-fire.pressed {
             background: rgba(255, 50, 50, 0.4);
-            box-shadow: 0 0 22px rgba(255,0,0,0.7);
+            box-shadow: 0 0 18px rgba(255,0,0,0.7);
         }
 
         /* Rotate prompt */
@@ -1420,11 +1420,11 @@
             const vw = window.innerWidth;
             const vh = window.innerHeight;
 
-            // Reserve 75px at bottom for controls
-            const availH = vh - 75;
+            // Only 65px reserved for controls at bottom
+            const availH = vh - 65;
             const availW = vw;
 
-            // Game canvas is 800x600, border adds 8px each dimension
+            // Game canvas 800x600 + 8px borders = 808x608
             const scaleW = availW / 808;
             const scaleH = availH / 608;
             const scale = Math.min(scaleW, scaleH);
@@ -1433,7 +1433,6 @@
             container.style.transformOrigin = 'top left';
             container.style.position = 'absolute';
             container.style.top = '0';
-            container.style.left = '0';
 
             // Center horizontally
             const scaledW = 808 * scale;
@@ -1443,7 +1442,9 @@
 
         scaleGameForMobile();
         window.addEventListener('resize', scaleGameForMobile);
-        window.addEventListener('orientationchange', () => setTimeout(scaleGameForMobile, 100));
+        window.addEventListener('orientationchange', () => setTimeout(scaleGameForMobile, 150));
+        // Hide browser bar on mobile to maximize game area
+        window.addEventListener('load', () => setTimeout(() => window.scrollTo(0, 1), 100));
 
         // Initialize and start
         updateUI();
