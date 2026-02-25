@@ -2,14 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="Space Invaders">
-    <meta name="theme-color" content="#000000">
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icon-192.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SPACE INVADERS</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
@@ -20,21 +13,14 @@
             box-sizing: border-box;
         }
         
-        html, body {
-            width: 100%;
-            height: 100%;
-        }
-
         body {
             background: #000;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            min-height: 100dvh;
             font-family: 'Press Start 2P', cursive;
             overflow: hidden;
-            touch-action: none;
         }
         
         #gameContainer {
@@ -44,7 +30,6 @@
             box-shadow: 
                 0 0 20px #00ff00,
                 inset 0 0 100px rgba(0, 255, 0, 0.1);
-            transform-origin: top center;
         }
         
         canvas {
@@ -86,19 +71,14 @@
         }
         
         #gameOver, #startScreen {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             color: #00ff00;
             text-align: center;
-            z-index: 200;
+            z-index: 100;
             text-shadow: 0 0 20px #00ff00;
-            background: #000;
-            padding: 20px;
-            overflow-y: auto;
         }
         
         #gameOver h1, #startScreen h1 {
@@ -116,16 +96,12 @@
             background: #00ff00;
             color: #000;
             border: none;
-            padding: 16px 28px;
+            padding: 10px 20px;
             font-family: 'Press Start 2P', cursive;
-            font-size: 14px;
+            font-size: 12px;
             cursor: pointer;
             margin-top: 20px;
             transition: all 0.3s;
-            /* Bigger tap target on mobile */
-            min-width: 180px;
-            min-height: 50px;
-            -webkit-tap-highlight-color: transparent;
         }
         
         .button:hover {
@@ -142,59 +118,83 @@
             display: none;
         }
 
-        /* Touch controls for mobile */
-        #touchControls {
+        /* Mobile controls - only shown on touch devices */
+        #mobileControls {
             display: none;
-            position: absolute;
+            position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            height: 110px;
-            z-index: 20;
-            padding: 10px 16px;
-            box-sizing: border-box;
+            padding: 12px 20px 24px;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
             justify-content: space-between;
             align-items: center;
-            background: rgba(0,0,0,0.5);
+            z-index: 200;
+            pointer-events: none;
         }
 
-        @media (pointer: coarse) {
-            #touchControls { display: flex; }
-            #gameContainer { padding-bottom: 110px; }
-            canvas { display: block; }
+        .mobile-btn-group {
+            display: flex;
+            gap: 10px;
+            pointer-events: all;
         }
 
-        .touch-btn {
+        .mobile-btn {
             background: rgba(0, 255, 0, 0.15);
             border: 2px solid #00ff00;
             color: #00ff00;
             font-family: 'Press Start 2P', cursive;
-            font-size: 22px;
-            border-radius: 10px;
-            user-select: none;
-            -webkit-user-select: none;
+            font-size: 18px;
+            width: 70px;
+            height: 70px;
+            border-radius: 12px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             box-shadow: 0 0 10px rgba(0,255,0,0.3);
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: none;
             transition: background 0.1s;
-            -webkit-tap-highlight-color: transparent;
         }
-        .touch-btn:active, .touch-btn.pressed {
+
+        .mobile-btn:active,
+        .mobile-btn.pressed {
             background: rgba(0, 255, 0, 0.4);
+            box-shadow: 0 0 20px rgba(0,255,0,0.6);
         }
-        .touch-move { width: 80px; height: 80px; }
-        .touch-fire {
-            width: 90px; height: 80px;
-            font-size: 12px;
-            color: #ffff00;
-            border-color: #ffff00;
-            background: rgba(255,255,0,0.1);
-            box-shadow: 0 0 10px rgba(255,255,0,0.3);
+
+        .mobile-btn-fire {
+            background: rgba(255, 0, 0, 0.15);
+            border-color: #ff4444;
+            color: #ff4444;
+            width: 80px;
+            height: 80px;
+            font-size: 14px;
+            box-shadow: 0 0 10px rgba(255,0,0,0.3);
         }
-        .touch-fire:active, .touch-fire.pressed {
-            background: rgba(255,255,0,0.35);
+
+        .mobile-btn-fire:active,
+        .mobile-btn-fire.pressed {
+            background: rgba(255, 0, 0, 0.4);
+            box-shadow: 0 0 20px rgba(255,0,0,0.6);
+        }
+
+        /* Show mobile controls only on touch screens */
+        @media (pointer: coarse) {
+            #mobileControls {
+                display: flex;
+            }
+            body {
+                align-items: flex-start;
+                padding-top: 10px;
+                padding-bottom: 120px;
+                overflow-y: auto;
+            }
+            #gameContainer {
+                transform-origin: top center;
+            }
         }
         
         #lives {
@@ -213,38 +213,6 @@
     </style>
 </head>
 <body>
-    <!-- Start screen & game over are OUTSIDE gameContainer so they always fill the real screen -->
-    <div id="startScreen">
-        <h1>SPACE INVADERS</h1>
-        <p>ARROW KEYS TO MOVE</p>
-        <p style="margin-bottom:8px;">SPACE / FIRE BTN TO SHOOT</p>
-        <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px; align-items: center;">
-            <div style="display: flex; align-items: center; gap: 14px;">
-                <canvas id="prev0" width="50" height="36"></canvas>
-                <span style="color:#ffff00; font-size:12px;">= 30 PTS</span>
-            </div>
-            <div style="display: flex; align-items: center; gap: 14px;">
-                <canvas id="prev1" width="50" height="36"></canvas>
-                <span style="color:#00ffff; font-size:12px;">= 20 PTS</span>
-            </div>
-            <div style="display: flex; align-items: center; gap: 14px;">
-                <canvas id="prev2" width="50" height="36"></canvas>
-                <span style="color:#ff00ff; font-size:12px;">= 10 PTS</span>
-            </div>
-            <div style="display: flex; align-items: center; gap: 14px;">
-                <canvas id="prevUFO" width="60" height="36"></canvas>
-                <span style="color:#ff0000; font-size:12px;">= ? MYSTERY</span>
-            </div>
-        </div>
-        <button class="button" onclick="startGame()">START GAME</button>
-    </div>
-
-    <div id="gameOver" class="hidden">
-        <h1>GAME OVER</h1>
-        <p>FINAL SCORE: <span id="finalScore">0000</span></p>
-        <button class="button" onclick="restartGame()">PLAY AGAIN</button>
-    </div>
-
     <div id="gameContainer">
         <div id="ui">
             <div>SCORE: <span id="score">0000</span></div>
@@ -254,79 +222,57 @@
                 <span>LIVES:</span>
             </div>
         </div>
-
+        
+        <div id="startScreen">
+            <h1>SPACE INVADERS</h1>
+            <p>ARROW KEYS TO MOVE</p>
+            <p>SPACE TO SHOOT</p>
+            <div style="margin-top: 30px; display: flex; flex-direction: column; gap: 10px; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <canvas id="prev0" width="50" height="36"></canvas>
+                    <span style="color:#ffff00; font-size:12px;">= 30 PTS</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <canvas id="prev1" width="50" height="36"></canvas>
+                    <span style="color:#00ffff; font-size:12px;">= 20 PTS</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <canvas id="prev2" width="50" height="36"></canvas>
+                    <span style="color:#ff00ff; font-size:12px;">= 10 PTS</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <canvas id="prevUFO" width="60" height="36"></canvas>
+                    <span style="color:#ff0000; font-size:12px;">= ? MYSTERY</span>
+                </div>
+            </div>
+            <button class="button" onclick="startGame()">START GAME</button>
+        </div>
+        
+        <div id="gameOver" class="hidden">
+            <h1>GAME OVER</h1>
+            <p>FINAL SCORE: <span id="finalScore">0000</span></p>
+            <button class="button" onclick="restartGame()">PLAY AGAIN</button>
+        </div>
+        
         <canvas id="gameCanvas" width="800" height="600"></canvas>
+    </div>
 
-        <!-- Mobile touch controls -->
-        <div id="touchControls">
-            <button class="touch-btn touch-move" id="btnLeft">◀</button>
-            <button class="touch-btn touch-fire" id="btnFire">FIRE</button>
-            <button class="touch-btn touch-move" id="btnRight">▶</button>
+    <!-- Mobile Controls: only visible on touch devices via CSS -->
+    <div id="mobileControls">
+        <div class="mobile-btn-group">
+            <button class="mobile-btn" id="btnLeft" aria-label="Move Left">◀</button>
+            <button class="mobile-btn" id="btnRight" aria-label="Move Right">▶</button>
+        </div>
+        <div class="mobile-btn-group">
+            <button class="mobile-btn mobile-btn-fire" id="btnFire" aria-label="Fire">FIRE</button>
         </div>
     </div>
 
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
-
-        // ── Responsive scaling ──────────────────────────────────────
-        // The game logic always runs at 800x600 internally.
-        // We CSS-scale the container to fit the actual screen.
-        function scaleGame() {
-            const GAME_W = 800;
-            const GAME_H = 600;
-            const container = document.getElementById('gameContainer');
-            const isMobile = window.matchMedia('(pointer: coarse)').matches;
-            const touchH = isMobile ? 120 : 0;
-            const screenW = window.innerWidth;
-            const screenH = window.innerHeight;
-            const isPortrait = screenH > screenW;
-
-            container.style.width  = GAME_W + 'px';
-            container.style.height = GAME_H + 'px';
-
-            if (isPortrait && isMobile) {
-                // Rotate 90deg so landscape game fits portrait screen
-                // Available area for the rotated game:
-                const availW = screenH - touchH;  // rotated: height becomes width
-                const availH = screenW;            // rotated: width becomes height
-                const scale = Math.min(availW / GAME_W, availH / GAME_H);
-                const offsetX = (screenW - GAME_H * scale) / 2;
-                const offsetY = (screenH - touchH - GAME_W * scale) / 2;
-                container.style.transformOrigin = '0 0';
-                container.style.transform =
-                    'translateX(' + (offsetX + GAME_H * scale) + 'px) ' +
-                    'translateY(' + offsetY + 'px) ' +
-                    'rotate(90deg) ' +
-                    'scale(' + scale + ')';
-                container.style.marginTop = '0px';
-
-                // Also rotate touch controls to match
-                const tc = document.getElementById('touchControls');
-                if (tc) {
-                    tc.style.position = 'fixed';
-                    tc.style.bottom = '0';
-                    tc.style.left = '0';
-                    tc.style.right = '0';
-                    tc.style.height = touchH + 'px';
-                }
-            } else {
-                // Normal landscape / desktop scaling
-                const availW = screenW;
-                const availH = screenH - touchH;
-                const scale = Math.min(availW / GAME_W, availH / GAME_H);
-                container.style.transformOrigin = 'top center';
-                container.style.transform = 'scale(' + scale + ')';
-                const scaledH = GAME_H * scale;
-                const topOffset = Math.max(0, (availH - scaledH) / 2);
-                container.style.marginTop = topOffset + 'px';
-            }
-        }
-        scaleGame();
-        window.addEventListener('resize', scaleGame);
-        window.addEventListener('orientationchange', () => setTimeout(scaleGame, 400));
-
-        // ── Audio Context for sound effects ─────────────────────────
+        
+        // Audio Context for sound effects
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         
         // Game state
@@ -781,8 +727,6 @@
         
         // Sound effects using Web Audio API
         function playSound(type) {
-            try {
-            if (audioCtx.state === 'suspended') audioCtx.resume();
             const oscillator = audioCtx.createOscillator();
             const gainNode = audioCtx.createGain();
             
@@ -827,13 +771,11 @@
                     oscillator.stop(audioCtx.currentTime + 0.5);
                     break;
             }
-            } catch(e) { /* audio blocked on mobile - ignore */ }
         }
         
         // Game loop
         function gameLoop(timestamp) {
-            if (lastTime === 0) lastTime = timestamp;
-            const deltaTime = Math.min((timestamp - lastTime) / 1000, 0.05);
+            const deltaTime = (timestamp - lastTime) / 1000;
             lastTime = timestamp;
             
             // Clear canvas
@@ -1076,43 +1018,59 @@
             keys[e.key] = false;
         });
         
+        // Mobile touch controls
+        const mobileKeys = { left: false, right: false, fire: false };
+
+        function setupMobileButton(id, key) {
+            const btn = document.getElementById(id);
+            if (!btn) return;
+
+            const press = (e) => {
+                e.preventDefault();
+                mobileKeys[key] = true;
+                btn.classList.add('pressed');
+                // Resume audio context on first touch (required by browsers)
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+            };
+            const release = (e) => {
+                e.preventDefault();
+                mobileKeys[key] = false;
+                btn.classList.remove('pressed');
+            };
+
+            btn.addEventListener('touchstart', press, { passive: false });
+            btn.addEventListener('touchend', release, { passive: false });
+            btn.addEventListener('touchcancel', release, { passive: false });
+            // Also support mouse for testing on desktop
+            btn.addEventListener('mousedown', press);
+            btn.addEventListener('mouseup', release);
+            btn.addEventListener('mouseleave', release);
+        }
+
+        setupMobileButton('btnLeft', 'left');
+        setupMobileButton('btnRight', 'right');
+        setupMobileButton('btnFire', 'fire');
+
         // Update player movement
         function updatePlayerMovement(deltaTime) {
-            if (keys['ArrowLeft'] || keys['a'] || keys['A']) {
+            if (keys['ArrowLeft'] || keys['a'] || keys['A'] || mobileKeys.left) {
                 player.move(-1, deltaTime);
             }
-            if (keys['ArrowRight'] || keys['d'] || keys['D']) {
+            if (keys['ArrowRight'] || keys['d'] || keys['D'] || mobileKeys.right) {
                 player.move(1, deltaTime);
             }
-            if (keys[' '] && gameState === 'playing') {
+            if ((keys[' '] || mobileKeys.fire) && gameState === 'playing') {
                 player.shoot();
             }
         }
         
         // Start game
         function startGame() {
-            // Resume AudioContext - required on mobile after user gesture
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-            // Hide both screens
             document.getElementById('startScreen').classList.add('hidden');
-            document.getElementById('gameOver').classList.add('hidden');
-            // Reset ALL global state
             gameState = 'playing';
             score = 0;
             lives = 3;
             level = 1;
-            levelTransition = false;
-            levelTransitionTimer = 0;
-            alienDirection = 1;
-            alienMoveTimer = 0;
-            alienShootTimer = 0;
-            ufoTimer = 0;
-            animationTimer = 0;
-            animationFrame = 0;
-            shootCooldown = 0;
-            lastTime = 0;
             initGame();
         }
         
@@ -1131,8 +1089,7 @@
         
         // Enhanced game loop with player movement
         function enhancedGameLoop(timestamp) {
-            if (lastTime === 0) lastTime = timestamp;
-            const deltaTime = Math.min((timestamp - lastTime) / 1000, 0.05);
+            const deltaTime = (timestamp - lastTime) / 1000;
             lastTime = timestamp;
             
             ctx.fillStyle = '#000';
@@ -1384,40 +1341,19 @@
         // Draw previews once DOM is ready
         drawPreviewSprites();
 
-        // ── Touch controls ──────────────────────────────────────────
-        (function() {
-            const btnLeft  = document.getElementById('btnLeft');
-            const btnRight = document.getElementById('btnRight');
-            const btnFire  = document.getElementById('btnFire');
-
-            function hold(btn, key) {
-                btn.addEventListener('touchstart', e => {
-                    e.preventDefault();
-                    keys[key] = true;
-                    btn.classList.add('pressed');
-                }, { passive: false });
-                const release = e => {
-                    e.preventDefault();
-                    keys[key] = false;
-                    btn.classList.remove('pressed');
-                };
-                btn.addEventListener('touchend',    release, { passive: false });
-                btn.addEventListener('touchcancel', release, { passive: false });
-            }
-
-            hold(btnLeft,  'ArrowLeft');
-            hold(btnRight, 'ArrowRight');
-            hold(btnFire,  ' ');
-        })();
-
-        // ── Service Worker registration ─────────────────────────────
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then(reg => console.log('SW registered:', reg.scope))
-                    .catch(err => console.warn('SW failed:', err));
-            });
+        // Scale game canvas to fit mobile screens
+        function scaleGameForMobile() {
+            const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
+            if (!isTouchDevice) return;
+            const container = document.getElementById('gameContainer');
+            const maxW = window.innerWidth - 16;
+            const scale = Math.min(1, maxW / 808); // 800px canvas + 8px border
+            container.style.transform = `scale(${scale})`;
+            container.style.transformOrigin = 'top center';
         }
+
+        scaleGameForMobile();
+        window.addEventListener('resize', scaleGameForMobile);
 
         // Initialize and start
         updateUI();
