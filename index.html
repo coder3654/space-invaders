@@ -1428,7 +1428,7 @@
             const scaleW = availW / 808;
             const scaleH = availH / 608;
             // Use height scale so full canvas always visible, but nudge it up 10% wider
-            const scale = Math.min(scaleW, scaleH * 1.0);
+            const scale = Math.min(scaleW, scaleH);
 
             container.style.transform = `scale(${scale})`;
             container.style.transformOrigin = 'top left';
